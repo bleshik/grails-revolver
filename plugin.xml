@@ -1,9 +1,0 @@
-<plugin name='grails-revolver' version='0.1' grailsVersion='2.4 &gt; *'>
-  <author>Alexey Balchunas</author>
-  <authorEmail>bleshik@gmail.com</authorEmail>
-  <title>Grails Revolver Plugin</title>
-  <description>Plugin for a little more efficient development using Grails</description>
-  <documentation>https://github.com/bleshik/grails-revolver</documentation>
-  <type>GrailsRevolverGrailsPlugin</type>
-  <resources />
-</plugin>

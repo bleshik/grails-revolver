@@ -9,6 +9,7 @@ import org.grails.datastore.mapping.simple.SimpleMapDatastore
 
 includeTargets << grailsScript("_GrailsClean")
 includeTargets << grailsScript("_GrailsTest")
+includeTargets << grailsScript('_GrailsBootstrap')
 
 TEST_PHASE_AND_TYPE_SEPARATOR = projectTestRunner.TEST_PHASE_AND_TYPE_SEPARATOR
 
@@ -35,22 +36,36 @@ integrationPhaseConfigurer = new IntegrationTestPhaseConfigurer(projectTestRunne
 
 projectTestRunner.testFeatureDiscovery.configurers.integration = integrationPhaseConfigurer
 
-integrationTestPhaseCleanUp = {
-    integrationPhaseConfigurer.doCleanup()
-}
-
 target('default': "Run a Grails applications unit tests") {
     depends(checkVersion, configureProxy, cleanTestReports)
     try {
         TestRuntimeFactory.removePluginClass(GrailsApplicationTestPlugin)
         TestRuntimeFactory.addPluginClass(HackedGrailsApplicationTestPlugin)
         if (!Holders.grailsApplication?.mainContext) {
+            depends bootstrap
+            def watcher = new GrailsProjectWatcher(projectLoader.projectPackager.projectCompiler, Holders.grailsApplication.mainContext.getBean(GrailsPluginManager))
+            watcher.start()
             allTests()
-            while (!System.console().readLine("Run the tests one more time?").startsWith("q")) {
-                allTests()
+
+            // listen for changes and rerun tests, if any changes are detected
+            AtomicBoolean changed = new AtomicBoolean()
+            watcher.addListener(new DirectoryWatcher.FileChangeListener() {
+                void onChange(File file) {
+                    changed.set(true)
+                }
+
+                void onNew(File file) {
+                    changed.set(true)
+                }
+            })
+            while (true) {
+                if (changed.compareAndSet(true, false)) {
+                    allTests()
+                } else {
+                    Thread.sleep(1000)
+                }
             }
 
-            integrationTestPhaseCleanUp()
         } else {
             IntegrationTestPhaseConfigurer.currentApplicationContext = Holders.grailsApplication.mainContext as GrailsWebApplicationContext
             binding.setVariable('appCtx', Holders.grailsApplication.mainContext)

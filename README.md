@@ -34,4 +34,4 @@ Also you can directly use the 're-test-app':
 ```bash
 grails re-test-app integration: org.my.company.MyFavouriteSpec
 ```
-Which will ask you 'Run the tests one more time?' (yeah, it better work like *sbt ~test* on source files changes, but this is not implemented yet).
+Which will rerun tests every time Grails detects changes in any source files.

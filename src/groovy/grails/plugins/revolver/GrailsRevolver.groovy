@@ -13,10 +13,12 @@ import groovy.transform.CompileStatic
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.support.GrailsApplicationDiscoveryStrategy
 import org.springframework.context.ApplicationContext
+import java.util.concurrent.atomic.AtomicBoolean
 
 @CompileStatic
 final class GrailsRevolver {
     private GrailsRevolver() {}
+
 
     /**
      * Runs command without loading the actual project from scratch. So basically it will simply execute the Gant script.

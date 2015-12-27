@@ -1,5 +1,10 @@
 import grails.test.runtime.GrailsApplicationTestPlugin
 import grails.test.runtime.TestRuntime
+import org.codehaus.groovy.grails.compiler.DirectoryWatcher
+import org.codehaus.groovy.grails.project.compiler.GrailsProjectWatcher
+
+import java.util.concurrent.atomic.AtomicBoolean
+import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import grails.test.runtime.TestRuntimeFactory
 import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
 import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration
@@ -42,12 +47,15 @@ target('default': "Run a Grails applications unit tests") {
         TestRuntimeFactory.removePluginClass(GrailsApplicationTestPlugin)
         TestRuntimeFactory.addPluginClass(HackedGrailsApplicationTestPlugin)
         if (!Holders.grailsApplication?.mainContext) {
-            depends bootstrap
-            def watcher = new GrailsProjectWatcher(projectLoader.projectPackager.projectCompiler, Holders.grailsApplication.mainContext.getBean(GrailsPluginManager))
-            watcher.start()
+            depends(compile, bootstrap)
+
+            IntegrationTestPhaseConfigurer.currentApplicationContext = Holders.grailsApplication.mainContext as GrailsWebApplicationContext
+
             allTests()
 
             // listen for changes and rerun tests, if any changes are detected
+            def watcher = new GrailsProjectWatcher(projectLoader.projectPackager.projectCompiler, Holders.grailsApplication.mainContext.getBean(GrailsPluginManager))
+            watcher.start()
             AtomicBoolean changed = new AtomicBoolean()
             watcher.addListener(new DirectoryWatcher.FileChangeListener() {
                 void onChange(File file) {
@@ -86,6 +94,7 @@ class HackedGrailsApplicationTestPlugin extends GrailsApplicationTestPlugin {
     @Override
     void initGrailsApplication(final TestRuntime runtime, final Map callerInfo) {
         runtime.putValue("grailsApplication", Holders.grailsApplication)
+        Holders.grailsApplication.classLoader.loadClass('grails.plugins.revolver.GrailsRevolver').fixHolders()
         if (!Holders.applicationContext.containsBean("simpleMapDatastore")) {
             Holders.applicationContext.beanFactory.registerSingleton("simpleMapDatastore", new SimpleMapDatastore())
         }

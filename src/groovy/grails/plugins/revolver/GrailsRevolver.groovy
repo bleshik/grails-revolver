@@ -58,7 +58,7 @@ final class GrailsRevolver {
      * this returns no application context.
      * To fix that, we simply add dummy discovery strategy using {@link Holders#getGrailsApplication()}.
      */
-    private static void fixHolders() {
+     static void fixHolders() {
         if (!Holders.findApplicationContext() && Holders.grailsApplication) {
             Holders.addApplicationDiscoveryStrategy(new GrailsApplicationDiscoveryStrategy() {
                 @Override

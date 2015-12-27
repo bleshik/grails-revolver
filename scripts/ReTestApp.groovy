@@ -12,6 +12,10 @@ import org.codehaus.groovy.grails.test.runner.phase.IntegrationTestPhaseConfigur
 import grails.util.Holders
 import org.grails.datastore.mapping.simple.SimpleMapDatastore
 
+grailsSettings.defaultEnv = true
+scriptEnv = 'test'
+
+includeTargets << grailsScript("_GrailsSettings")
 includeTargets << grailsScript("_GrailsClean")
 includeTargets << grailsScript("_GrailsTest")
 includeTargets << grailsScript('_GrailsBootstrap')

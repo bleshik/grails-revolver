@@ -6,7 +6,7 @@ Basically, it tries to minimize impact from Grails minimum-20-sec-startup-time b
 Add plugin in your BuildConfig.groovy:
 ```groovy
 environments {
-    development {
+    test {
         dependencies {
             plugins {
                 runtime ":grails-revolver:0.1.0"

@@ -1,5 +1,6 @@
 package grails.plugins.revolver
 
+import java.lang.reflect.Field
 import grails.test.runtime.GrailsApplicationTestPlugin
 import grails.test.runtime.TestRuntime
 import org.codehaus.groovy.grails.cli.parsing.DefaultCommandLine
@@ -27,12 +28,14 @@ final class GrailsRevolver {
         BuildSettings settings = BuildSettingsHolder.settings
         fixHolders()
         try {
-            def runner = new GrailsScriptRunner(settings)
+            GrailsScriptRunner runner = new GrailsScriptRunner(settings)
 
             // Since the runner is not supposed to be used like that,
             // we have to initialize some private things by ourselves
-            def scriptCacheDirField = GrailsScriptRunner.getDeclaredField('scriptCacheDir').with { setAccessible(true); it }
-            def classLoaderField = GrailsScriptRunner.getDeclaredField('classLoader').with { setAccessible(true); it }
+            Field scriptCacheDirField = GrailsScriptRunner.getDeclaredField('scriptCacheDir')
+            scriptCacheDirField.setAccessible(true)
+            Field classLoaderField = GrailsScriptRunner.getDeclaredField('classLoader')
+            classLoaderField.setAccessible(true)
             scriptCacheDirField.set(runner, new File(settings.getProjectWorkDir(), "scriptCache"))
             classLoaderField.set(runner, Holders.grailsApplication.classLoader)
 

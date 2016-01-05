@@ -1,20 +1,16 @@
 package grails.plugins.revolver
 
-import java.lang.reflect.Field
-import grails.test.runtime.GrailsApplicationTestPlugin
-import grails.test.runtime.TestRuntime
-import org.codehaus.groovy.grails.cli.parsing.DefaultCommandLine
-import org.codehaus.groovy.grails.cli.parsing.CommandLineParser
-import grails.util.BuildSettingsHolder
-import grails.util.GrailsNameUtils
 import grails.util.BuildSettings
+import grails.util.BuildSettingsHolder
 import grails.util.Holders
-import org.codehaus.groovy.grails.cli.GrailsScriptRunner
 import groovy.transform.CompileStatic
+
+import java.lang.reflect.Field
+
+import org.codehaus.groovy.grails.cli.GrailsScriptRunner
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.support.GrailsApplicationDiscoveryStrategy
 import org.springframework.context.ApplicationContext
-import java.util.concurrent.atomic.AtomicBoolean
 
 @CompileStatic
 final class GrailsRevolver {

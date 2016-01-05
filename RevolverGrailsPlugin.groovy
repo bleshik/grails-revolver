@@ -1,4 +1,4 @@
-class GrailsRevolverGrailsPlugin {
+class RevolverGrailsPlugin {
     def version = "0.1.0"
     def grailsVersion = "2.4 > *"
     def title = "Grails Revolver Plugin"

@@ -24,6 +24,6 @@ Which will not load a new Grails application from scratch, but reuse same loaded
 
 Also you can directly use the 're-test-app':
 ```bash
-grails re-test-app integration: org.my.company.MyFavouriteSpec
+grails test re-test-app integration: org.my.company.MyFavouriteSpec
 ```
 Which will rerun tests every time Grails detects changes in any source files.

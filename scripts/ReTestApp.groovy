@@ -54,6 +54,7 @@ target('default': "Run a Grails applications unit tests") {
             depends(compile, bootstrap)
 
             IntegrationTestPhaseConfigurer.currentApplicationContext = Holders.grailsApplication.mainContext as GrailsWebApplicationContext
+            Holders.grailsApplication.classLoader.loadClass('grails.plugins.revolver.GrailsRevolver').fixHolders()
 
             allTests()
 
@@ -98,7 +99,6 @@ class HackedGrailsApplicationTestPlugin extends GrailsApplicationTestPlugin {
     @Override
     void initGrailsApplication(final TestRuntime runtime, final Map callerInfo) {
         runtime.putValue("grailsApplication", Holders.grailsApplication)
-        Holders.grailsApplication.classLoader.loadClass('grails.plugins.revolver.GrailsRevolver').fixHolders()
         if (!Holders.applicationContext.containsBean("simpleMapDatastore")) {
             Holders.applicationContext.beanFactory.registerSingleton("simpleMapDatastore", new SimpleMapDatastore())
         }

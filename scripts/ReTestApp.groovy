@@ -1,8 +1,9 @@
 import grails.test.runtime.GrailsApplicationTestPlugin
 import grails.test.runtime.TestRuntime
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import org.codehaus.groovy.grails.compiler.DirectoryWatcher
 import org.codehaus.groovy.grails.project.compiler.GrailsProjectWatcher
-
 import java.util.concurrent.atomic.AtomicBoolean
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import grails.test.runtime.TestRuntimeFactory
@@ -58,6 +59,9 @@ target('default': "Run a Grails applications unit tests") {
 
             allTests()
 
+            println "Change source files or press any key to rerun the tests"
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(System.in))
             // listen for changes and rerun tests, if any changes are detected
             def watcher = new GrailsProjectWatcher(projectLoader.projectPackager.projectCompiler, Holders.grailsApplication.mainContext.getBean(GrailsPluginManager))
             watcher.start()
@@ -72,8 +76,11 @@ target('default': "Run a Grails applications unit tests") {
                 }
             })
             while (true) {
-                if (changed.compareAndSet(true, false)) {
+                if (changed.compareAndSet(true, false) || input.ready()) {
                     allTests()
+                    // reset the flag and the input, so that we ignore the 'rerun triggers' happened during the last test run
+                    changed.set(false)
+                    while(input.ready()) { input.read() }
                 } else {
                     Thread.sleep(1000)
                 }

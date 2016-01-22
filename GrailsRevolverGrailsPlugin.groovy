@@ -1,5 +1,5 @@
 class GrailsRevolverGrailsPlugin {
-    def version = "0.2.1"
+    def version = "0.3.0"
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [ "grails-app/views/error.gsp" ]
     def title = "Grails Revolver Plugin" // Headline display name of the plugin
